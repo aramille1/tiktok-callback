@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Callback</title>
+<style>
+  body { font-family: -apple-system, Helvetica, Arial, sans-serif; background: #111; color: #eee; margin: 0; padding: 40px 16px; }
+  main { max-width: 640px; margin: 0 auto; }
+  h1 { font-size: 20px; }
+  code { display: block; background: #222; padding: 12px; border-radius: 8px; word-break: break-all; margin: 12px 0; font-size: 14px; }
+  button { font-size: 16px; padding: 10px 16px; border-radius: 8px; border: 0; background: #4ade80; color: #111; cursor: pointer; }
+  p { line-height: 1.5; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Login callback</h1>
+  <p id="msg">Reading the address bar…</p>
+  <code id="url"></code>
+  <button id="copy" hidden>Copy the address</button>
+  <p>This page shows only what is in its own address. Nothing is sent anywhere.</p>
+</main>
+<script>
+  var full = location.href;
+  var q = new URLSearchParams(location.search);
+  var msg = document.getElementById("msg");
+  var box = document.getElementById("url");
+  var btn = document.getElementById("copy");
+  if (q.get("code")) {
+    msg.textContent = "Login worked. Copy this whole address and paste it to Claude.";
+    box.textContent = full;
+    btn.hidden = false;
+    btn.onclick = function () { navigator.clipboard.writeText(full).then(function () { btn.textContent = "Copied"; }); };
+  } else if (q.get("error")) {
+    msg.textContent = "TikTok returned an error: " + q.get("error") + " " + (q.get("error_description") || "");
+    box.textContent = full;
+  } else {
+    msg.textContent = "Nothing to show. This page only does something when TikTok sends you here after a login.";
+  }
+</script>
+</body>
+</html>
